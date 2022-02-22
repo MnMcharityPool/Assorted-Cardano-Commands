@@ -1,14 +1,16 @@
-#The below two commands will create a payment address from which you can then send tokens and #ADA to multiple addresses.  Once you have created the payment.addr, payment.skey and #payment.vkey you can save them in a folder and keep reusing them.  To reuse them, paste the 3 files #back into cardano-my-node folder.
+#The below two commands will create a payment address from which you can then send tokens and ADA to multiple addresses.  
+#Once you have created the payment.addr, payment.skey and payment.vkey you can save them in a folder and keep reusing them.  To reuse them, paste the 3 files back into cardano-my-node folder.
 
-#You will need to load this payment.addr with ADA+tokens.  To see how much ADA must be sent #along with a token to each address you can check Daedalus or Nami wallet.  When you try to send a #token from these wallets they will tell you the minimum ADA required to send along with it.
+#You will need to load this payment.addr with ADA + the tokens you want to send.  To see the minimum amount of ADA that must be sent with a token to each address you can check Daedalus or Nami wallet.  
+#When you try to send a token from either of these wallets they will tell you the minimum ADA required to send along with it.
 
 ______________________________________
-#note you don’t need to run the below command if you reuse your previous payment.addr
+#note you do not need to run the below command if you reuse your previous payment.addr
 
 cardano-cli address key-gen --verification-key-file payment.vkey --signing-key-file payment.skey
 
 ______________________________________
-#note you don’t need to run the below command if you reuse your previous payment.addr
+#note you do not need to run the below command if you reuse your previous payment.addr
 
 cardano-cli address build --payment-verification-key-file payment.vkey --out-file payment.addr --mainnet
 
@@ -59,7 +61,7 @@ ______________________________________
 #Now you will need to calculate your output which is the amount of lovelace you are sending with the tokens
 # If you are sending tokens to 10 people and the minimum ADA to send with the tokens is 1.44 ADA.  Output will be 1.44 ADA x 10 people = 14.4 ADA.   14400000 lovelace.
 
-output="AmountFromCalculationAbove"
+output="LovelaceAmountFromCalculationAbove"
 
 ______________________________________
 
@@ -73,7 +75,8 @@ cardano-cli transaction build-raw \
 
 ______________________________________
 
-#Adjust your minfee tx-out number below to match how many people you are sending to.  So if you #are sending to 10 people, increase this number to 10.  If the transaction fails after running the final #command, keep increasing the “count” numbers below (for any field) until the minfee equals the #amount demanded by the transaction failure error message.
+#Adjust your minfee tx-out number below to match how many people you are sending to.  So if you are sending to 10 people, increase this number to 10.  
+#If the transaction fails after running the final command, keep increasing the “count” numbers below (for any field) until the minfee equals the amount demanded by the transaction failure error message.
     
 minfee=$(cardano-cli transaction calculate-min-fee \
 --tx-body-file tx.raw \
@@ -92,18 +95,19 @@ txOut=$((${total_balance}-${minfee}-${output}))
 echo Change Output: ${txOut}
 
 ______________________________________
-#run the command below to find our token policy.name and amount which you will paste into the following command.
+#run the command below to find our token policy.name and amount which you will paste into the next command.
 
 cardano-cli query utxo --address $(cat payment.addr) --mainnet
 ______________________________________
 
 
-#update the command below with the addresses you want to send to, the minimum required amount of lovelace and the amount of the token you want to send.
+#update the command below with the Cardano addresses you want to send the tokens to, the minimum required amount of lovelace and the amount of the token you want to send.
 #You can copy and paste the --tx-out line to create as many lines as necessary.
-#An explanation of the --tx-out commands to the people you are paying (tx-out "addr_CardanoADDyouAreSendingTo000000000000+1440000(this first number after the + sign is the amount of lovelace you are sending)+15 (this second number is the amount of the token you are sending)57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522.43484f43”(this last string of characters is the token policy and Base16 code separated by a full stop.  You can copy the policyID and base16 code for your token from your wallet balance info you received when running the previous command (cardano-cli query utxo --address $(cat payment.addr) --mainnet)
+#An explanation of the --tx-out commands to the people you are paying (tx-out "addr_CardanoADDyouAreSendingTo000000000000+1440000(this first number after the + sign is the amount of lovelace you are sending)+15 (this second number is the amount of the token you are sending)
+#57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522.43484f43”(this last string of characters is the token policy and Base16 code.  You can copy the policyID and base16 code for your token from your wallet balance info you received when running the previous command (cardano-cli query utxo --address $(cat payment.addr) --mainnet)
 
-#Calculate the unused tokens that  must be also returned to your own wallet.  For example if your wallet has 900 tokens and you are sending a total of 100 tokens to several people, 800 tokens must be returned to your own wallet.
-Update the last tx-out command below with the number of tokens to be regurned - for example (--tx-out $(cat payment.addr)+${txOut}+"800 57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522.43484f43" \)
+#Calculate the unused tokens that must be also returned to your own wallet.  For example if your wallet has 900 tokens and you are sending a total of 100 tokens to several people, 800 tokens must be returned to your own wallet.
+#Update the last tx-out command below with the number of tokens to be returned - for example (--tx-out $(cat payment.addr)+${txOut}+"800 57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522.43484f43" \)
 
 
 cardano-cli transaction build-raw \
@@ -130,7 +134,8 @@ ______________________________________
  --tx-file tx.signed \
  --mainnet
  
-(note, if this final command errors because the minimum fee is not large enough, it will produce an output saying what the minumum fee must be.  You can go back and add numbers to the minimum fee calculation command (count fields) till the calculation produces a fee equal or greater than the amount needed.  Or you can simply run the below command and paste the required minimum fee into it.  
+(note, if this final command errors because the minimum fee is not large enough, it will produce an output saying what the minumum fee must be.  You can go back and add numbers to the minimum fee calculation command (count fields) until the calculation produces a fee equal or greater than the amount needed.  
+#Or you can simply run the below command and paste the required minimum fee into it.  
 
 minfee="amountNeededPerErrorMessage”
 
@@ -140,7 +145,3 @@ txOut=$((${total_balance}-${minfee}-${output}))
 echo Change Output: ${txOut}
 
 and continue through the remaining commands.
-
-
-
-
