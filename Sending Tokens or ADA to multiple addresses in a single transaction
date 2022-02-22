@@ -99,7 +99,8 @@ ______________________________________
 
 
 #update the command below with the addresses you want to send to, the minimum required amount of lovelace and the amount of the token you want to send.
-#For example:--(tx-out "addr_CardanoADDyouAreSendingToo00000000000+1440000(this first number is the amount of lovelace you are sending)+15 (this second number is the amount of the token you are sending)57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522.43484f43”(this last value is the token policy and Base16 code.  You can copy this from your wallet balance info you received from the previous command
+#You can copy and paste the --tx-out line to create as many lines as necessary.
+#An explanation of the --tx-out commands to the people you are paying (tx-out "addr_CardanoADDyouAreSendingTo000000000000+1440000(this first number after the + sign is the amount of lovelace you are sending)+15 (this second number is the amount of the token you are sending)57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522.43484f43”(this last string of characters is the token policy and Base16 code separated by a full stop.  You can copy the policyID and base16 code for your token from your wallet balance info you received when running the previous command (cardano-cli query utxo --address $(cat payment.addr) --mainnet)
 
 #Calculate the unused tokens that  must be also returned to your own wallet.  For example if your wallet has 900 tokens and you are sending a total of 100 tokens to several people, 800 tokens must be returned to your own wallet.
 Update the last tx-out command below with the number of tokens to be regurned - for example (--tx-out $(cat payment.addr)+${txOut}+"800 57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522.43484f43" \)
@@ -129,14 +130,17 @@ ______________________________________
  --tx-file tx.signed \
  --mainnet
  
-(note, if the above command errors because the minimum fee is not large enough, it will produce an output saying what the minumum fee must be.  You can go back and add numbers to the minimum fee calculation command (count fields) till the calculation produces a fee equal or greater than the amount needed.  Or you can simply run the below command and paste the required minimum fee into it.  
+(note, if this final command errors because the minimum fee is not large enough, it will produce an output saying what the minumum fee must be.  You can go back and add numbers to the minimum fee calculation command (count fields) till the calculation produces a fee equal or greater than the amount needed.  Or you can simply run the below command and paste the required minimum fee into it.  
 
 minfee="amountNeededPerErrorMessage”
 
-After running the minimum fee command, rerun the commands from 
+After running the minimum fee command, rerun the commands starting from:
+
 txOut=$((${total_balance}-${minfee}-${output}))
 echo Change Output: ${txOut}
-Onward.)
+
+and continue through the remaining commands.
+
 
 
 
